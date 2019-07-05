@@ -18,7 +18,7 @@ import PwdCheckButton from "@material-ui/icons/Spellcheck"
 import ErrorButton from "@material-ui/icons/ErrorOutline"
 
 
-import UtilisateursAPI from "../../api/UtilisateursAPI";
+import UtilisateursAPI from "../../services/UtilisateursAPI";
 import Menu from "../Menu";
 import Topbar from "../Topbar";
 import {UserImport} from "./UserImport";
@@ -35,7 +35,7 @@ const styles = theme => ({
         margin: 20,
     },
     button: {
-        margin: theme.spacing.unit,
+        margin: 'auto',
     },
     input: {
         display: 'none',
@@ -43,7 +43,13 @@ const styles = theme => ({
     inputfile : {
         display: 'none'
     },
+    csvFile: {
+        marginLeft: '10px',
+        marginRight: '20px',
+
+    },
     container: {
+        marginLeft: '10px',
         display: 'flex',
         flexWrap: 'wrap',
     },
@@ -111,7 +117,6 @@ class UtilisateursImport extends Component {
             this.setState( { csvFileName : ''});
             this.setState( { users : []});
         } else {
-            console.log("filename='" + filename + "'");
             this.setState( { csvFileName : filename.name});
 
             this.fileReader = new FileReader();
@@ -120,12 +125,12 @@ class UtilisateursImport extends Component {
         }
     }
 
-    handleClasseChange = name => event => {
+    handleChangeClasse = value => {
         this.setState({
-            classeImport: event.target.value
+            classeImport: value
           }
         )
-    };
+    }
 
     doImport() {
         const classe = this.state.classeImport;
@@ -192,7 +197,7 @@ class UtilisateursImport extends Component {
         const { csvFileName, users, classeImport} = this.state;
         const { classes } = this.props;
         const classeDisable = csvFileName === '';
-        const showImportButton = !classeDisable && classeImport !== '';
+        const disableImportButton = classeDisable || classeImport === '';
 
         const rows = [];
         let divStatus = <TableCell>&nbsp;</TableCell>;
@@ -201,6 +206,7 @@ class UtilisateursImport extends Component {
 
             switch (user.status )
             {
+                case -2:
                 case -1:
                     divStatus = <TableCell><ErrorButton color={"error"}/></TableCell>;
                     break;
@@ -216,7 +222,7 @@ class UtilisateursImport extends Component {
             }
             let divPaswordValid;
             if (user.isPasswordValid) {
-                divPaswordValid = <PwdCheckButton color={"default"}/>;
+                divPaswordValid = <PwdCheckButton color={"action"}/>;
             } else {
                 divPaswordValid = <ErrorButton color={"error"}/>;
             }
@@ -255,7 +261,7 @@ class UtilisateursImport extends Component {
                     <br />
 
                     <Grid container>
-                        <Grid item xs={12} sm={12} md={4}>
+                        <Grid item xs={12} sm={12} md={1}>
                             <input type='file'
                                    id='fileupload'
                                    className={classes.inputfile}
@@ -271,10 +277,13 @@ class UtilisateursImport extends Component {
                                     Upload
                                 </Button>
                             </label>
-
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={3}>
                             <TextField
                               id="csvfile"
                               label="Fichier CSV"
+                              fullWidth
+                              className={classes.csvFile}
                               disabled={true}
                               value={csvFileName}
                             />
@@ -285,23 +294,22 @@ class UtilisateursImport extends Component {
                               disabled={classeDisable}
                               classeSelected = {this.state.classeImport}
                               classes = {classes}
-                              onChange={this.handleClasseChange}
+                              onChange={this.handleChangeClasse}
                             />
                         </Grid>
 
                         <Grid item xs={12} sm={12} md={6} >
                             <Grid container justify="flex-end">
                                 <Grid item >
-                                    { showImportButton &&
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       className={classes.button}
+                                      disabled={disableImportButton}
                                       onClick={ () => this.doImport() }
                                     >
                                         Importer
                                     </Button>
-                                    }
                                 </Grid>
                             </Grid>
 

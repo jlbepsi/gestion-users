@@ -1,0 +1,155 @@
+import React from 'react';
+
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from "@material-ui/core/Container";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContentWrapper from "../share/SnackbarContentWrapper";
+
+import AuthService from "../../services/Security/AuthService";
+
+const useStyles = makeStyles(theme => ({
+  '@global': {
+    body: {
+      backgroundColor: theme.palette.common.white,
+    },
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '400px'
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.primary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
+
+export default function SignIn(props) {
+  const authenticationService = new AuthService();
+
+  const classes = useStyles();
+
+  const [form, setValues] = React.useState({
+    login: '',
+    password: ''
+  });
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [openSnackBar, setOpenSnackBar] = React.useState(false);
+
+  const updateField = e => {
+    setValues({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+
+  function handleCloseSnackBar (event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackBar(false);
+  }
+
+  function openSnackbar(message) {
+    setErrorMessage(message);
+    setOpenSnackBar(true);
+  }
+
+
+  function handleSubmit() {
+    authenticationService.loginWithRole(form.login, form.password, "ROLE_SUPER_ADMIN")
+      .then(res =>{
+        console.log("login AuthService.login.then");
+        props.history.replace('/');
+      })
+      .catch(error =>{
+        console.log(error);
+        openSnackbar('Le login ou le mot de passe sont incorrects');
+      })
+  }
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Gestion des utilisateurs
+        </Typography>
+        <div className={classes.form}>
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            margin={"dense"}
+            label="Identifiant"
+            name="login"
+            autoFocus
+
+            value={form.login}
+            onChange={updateField}
+          />
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            margin={"dense"}
+            label="Mot de passe"
+            name="password"
+            type="password"
+
+            value={form.password}
+            onChange={updateField}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+
+            onClick={handleSubmit}
+          >
+            Connexion
+          </Button>
+        </div>
+      </div>
+
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={openSnackBar}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackBar}
+      >
+        <SnackbarContentWrapper
+          onClose={handleCloseSnackBar}
+          variant={"error"}
+          message={errorMessage}
+        />
+      </Snackbar>
+    </Container>
+  );
+}

@@ -52,15 +52,6 @@ let ButtonStyled = props => {
   const {classes, className, text, variant, ...other} = props;
   const Icon = variantIcon[variant];
 
-  /*let css = classes.none;
-  switch (variant) {
-    case 'error':
-      css = classes.cssDanger;
-      break;
-    default:
-      break;
-  }*/
-
   return (
     <Button
       variant="contained"

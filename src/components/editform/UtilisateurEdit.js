@@ -1,7 +1,8 @@
 import UtilisateurModify from './UtilisateurModify'
 
 import withStyles from "@material-ui/core/styles/withStyles";
-import UtilisateursAPI from "../../api/UtilisateursAPI";
+import UtilisateursAPI from "../../services/UtilisateursAPI";
+import BtsRules from "../share/BtsRules";
 
 // https://scotch.io/courses/using-react-router-4/route-params
 // https://lorenstewart.me/2016/10/31/react-js-forms-controlled-components/
@@ -43,6 +44,7 @@ class UtilisateurEdit extends UtilisateurModify {
                 this.setState({user: data});
                 this.setState({processRunning: false});
 
+                this.setState({optionBTSActive: BtsRules.isBtsClasse (data.classe)});
                 console.log(data);
             })
           .catch(err => {

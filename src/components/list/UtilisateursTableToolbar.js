@@ -10,8 +10,10 @@ import Tooltip from "@material-ui/core/Tooltip/index";
 import IconButton from "@material-ui/core/IconButton/index";
 import Typography from "@material-ui/core/Typography/index";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import LinkIcon from '@material-ui/icons/Link';
-import LinkOffIcon from '@material-ui/icons/LinkOff';
+import ChangeBTSIcon from '@material-ui/icons/SchoolOutlined';
+import ActivateIcon from '@material-ui/icons/LockOpenOutlined';
+import DeactivateIcon from '@material-ui/icons/LockOutlined';
+import BtsRules from "../share/BtsRules";
 
 
 const toolbarStyles = theme => ({
@@ -49,7 +51,8 @@ const toolbarStyles = theme => ({
 });
 
 let UtilisateursTableToolbar = props => {
-  const { numTotal, numSelected, classes } = props;
+  const { numTotal, numSelected, classeSelected, classes } = props;
+  const btsOptionEnabled = BtsRules.isBtsClasse (classeSelected);
 
   return (
     <Toolbar
@@ -73,14 +76,21 @@ let UtilisateursTableToolbar = props => {
         <div className={classes.actions}>
           <Tooltip title={"Activer"}>
             <IconButton onClick={() => props.onActivateMany()}>
-              <LinkIcon />
+              <ActivateIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title={"Désactiver"}>
             <IconButton onClick={() => props.onDeactivateMany()}>
-              <LinkOffIcon />
+              <DeactivateIcon />
             </IconButton>
           </Tooltip>
+          {btsOptionEnabled &&
+          <Tooltip title={"Changer l'option BTS"}>
+            <IconButton onClick={() => props.onChangeBTSMany()}>
+              <ChangeBTSIcon/>
+            </IconButton>
+          </Tooltip>
+          }
           <Tooltip title={"Supprimer définitivement"}>
             <IconButton color={"secondary"} onClick={() => props.onDeleteMany()}>
               <DeleteForeverIcon />

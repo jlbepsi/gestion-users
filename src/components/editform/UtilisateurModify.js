@@ -17,9 +17,10 @@ import Snackbar from "@material-ui/core/Snackbar";
 
 import Menu from "../Menu";
 import Topbar from "../Topbar";
-import UtilisateursAPI from "../../api/UtilisateursAPI";
+import UtilisateursAPI from "../../services/UtilisateursAPI";
 import ClasseSelect from "../share/ClasseSelect";
 import SnackbarContentWrapper from  "../share/SnackbarContentWrapper";
+import BtsRules from "../share/BtsRules";
 
 
 
@@ -43,6 +44,7 @@ class UtilisateurModify extends Component {
             btsParcours: "",
             btsNumero: ""
         },
+        optionBTSActive: false,
         openSnackBar: false,
         snackbarIcon: "success",
         snackbarMessage: "Modifications effectuées !",
@@ -69,6 +71,19 @@ class UtilisateurModify extends Component {
         const {value} = event.target;
         let user = {...this.state.user, [name]: value};
         this.setState({user});
+    };
+    handleChangeClasse = value => {
+        let user = this.state.user;
+
+        console.log('handleChangeClasse=' + value)
+        user.classe = value;
+        if (BtsRules.isBtsClasse (value)) {
+            this.setState({optionBTSActive : true});
+        } else {
+            user.bts = false;
+            this.setState({optionBTSActive : false});
+        }
+        this.setState({user : user});
     };
 
     handleSwitchChange = name => event => {
@@ -117,7 +132,7 @@ class UtilisateurModify extends Component {
             }
         }
 
-        const userToModify = this.state.user;
+        const {user, optionBTSActive} = this.state;
         const editingUser = this.createNewUser === false;
 
         let login, mail, pwd, pwdConfirm;
@@ -130,7 +145,7 @@ class UtilisateurModify extends Component {
                   disabled={true}
                   fullWidth
 
-                  value={userToModify.login}
+                  value={user.login}
                   onChange={this.handleChange('login')}
                 />
             </Grid>;
@@ -143,7 +158,7 @@ class UtilisateurModify extends Component {
                     disabled={true}
                     fullWidth
 
-                    value={userToModify.mail}
+                    value={user.mail}
                     onChange={this.handleChange('mail')}
                   />
               </Grid>;
@@ -160,7 +175,7 @@ class UtilisateurModify extends Component {
                     label="Login"
                     fullWidth
 
-                    value={userToModify.login}
+                    value={user.login}
                     required
                     onChange={this.handleChange('login')}
                   />
@@ -173,7 +188,7 @@ class UtilisateurModify extends Component {
                     label="Mail"
                     fullWidth
 
-                    value={userToModify.mail}
+                    value={user.mail}
                     required
                     onChange={this.handleChange('mail')}
                   />
@@ -222,11 +237,11 @@ class UtilisateurModify extends Component {
                       <Grid container spacing={8}>
                           <Grid item xs={12} sm={12} md={4}>
                               <ClasseSelect
-                                classeSelected = {userToModify.classe}
+                                classeSelected = {user.classe}
                                 classes = {classes}
 
                                 required
-                                onChange={this.handleChange}
+                                onChange={this.handleChangeClasse}
                               />
                           </Grid>
                           <Grid item xs={12} sm={12} md={4}>
@@ -235,7 +250,7 @@ class UtilisateurModify extends Component {
                                 label="Nom"
                                 fullWidth
 
-                                value={userToModify.nom}
+                                value={user.nom}
                                 required
                                 onChange={this.handleChangeNomPrenom('nom')}
                               />
@@ -246,7 +261,7 @@ class UtilisateurModify extends Component {
                                 label="Prénom"
                                 fullWidth
 
-                                value={userToModify.prenom}
+                                value={user.prenom}
                                 required
                                 onChange={this.handleChangeNomPrenom('prenom')}
                               />
@@ -265,7 +280,8 @@ class UtilisateurModify extends Component {
                               <FormControlLabel
                                 control={
                                     <Switch
-                                      checked={userToModify.bts}
+                                      disabled={! optionBTSActive}
+                                      checked={user.bts}
                                       onChange={this.handleSwitchChange('bts')}
                                       color="default"
                                       value="bts"
@@ -276,11 +292,12 @@ class UtilisateurModify extends Component {
 
                           </Grid>
                           <Grid item xs={12} sm={12} md={5}>
-                              <FormControl fullWidth>
-                                  <InputLabel htmlFor="btsParcours">Parcours</InputLabel>
+                              <FormControl  className={classes.container}>
+                                  <InputLabel shrink htmlFor="btsParcours">Parcours</InputLabel>
                                   <Select
-                                    disabled={! userToModify.bts}
-                                    value={userToModify.btsParcours}
+                                    className={classes.container}
+                                    disabled={! user.bts}
+                                    value={user.btsParcours}
                                     onChange={this.handleChange('btsParcours')}
                                   >
                                       <MenuItem value={'IND'}>Indifferencié</MenuItem>
@@ -291,12 +308,12 @@ class UtilisateurModify extends Component {
                           </Grid>
                           <Grid item xs={12} sm={12} md={5}>
                               <TextField
-                                disabled={! userToModify.bts}
+                                disabled={! user.bts}
                                 id="btsNumero"
                                 label="Numéro BTS"
                                 fullWidth
 
-                                value={userToModify.btsNumero}
+                                value={user.btsNumero}
                                 onChange={this.handleChange('btsNumero')}
                               />
                           </Grid>

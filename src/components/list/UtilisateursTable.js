@@ -15,12 +15,13 @@ import Checkbox from '@material-ui/core/Checkbox/index';
 
 import UtilisateurRow from "./UtilisateurRow";
 import UtilisateursTableToolbar from "./UtilisateursTableToolbar";
-import DialogResetPassword from "../share/ResetPasswordDialog";
 import AlertDialog from "../share/AlertDialog";
+import DialogChangeBTS from "./DialogChangeBTS";
+import DialogResetPassword from "../share/DialogResetPassword";
 
 
 /*
-login: "test.v2",
+security: "test.v2",
 nom: "Test",
 prenom: "V2",
 motDePasse: null,
@@ -35,14 +36,10 @@ nomComplet: "Test V2"
 
 const headerRows = [
   { id: 'actif', label: 'Actif', sorted: false },
-  { id: 'login', label: 'Identifiant', sorted: true },
-  { id: 'nomComplet', label: 'Nom complet', sorted: false },
   { id: 'nom', label: 'Nom', sorted: true },
   { id: 'prenom', label: 'Prénom', sorted: false },
   { id: 'mail', label: 'Mail', sorted: false },
   { id: 'bts', label: 'BTS', sorted: true },
-  { id: 'btsParcours', label: 'Parcours', sorted: true },
-  { id: 'btsNumero', label: 'Numéro', sorted: false },
 ];
 
 class UtilisateursTableHead extends React.Component {
@@ -120,6 +117,10 @@ const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto',
   },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
 });
 
 class UtilisateursTable extends React.Component {
@@ -131,8 +132,17 @@ class UtilisateursTable extends React.Component {
     openDialogPwd: false,
     selectedUserLogin : '',
     openDeleteDialog: false,
+    openDeleteManyDialog: false,
     openDeleteMessage: '',
+    dialogchangebts: false,
+    classeSelected: '',
   };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.classeSelected !== prevProps.classeSelected) {
+      this.setState( { selected : []});
+    }
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -198,8 +208,29 @@ class UtilisateursTable extends React.Component {
     this.setState({ openDeleteDialog: false });
   };
 
+  handleChangeBTSMany = () => {
+    this.setState({ dialogchangebts: true });
+  };
+  handleChangeBTSManyConfirm = (bts, btsParcours) => {
+    this.props.onChangeBTSMany(this.state.selected, bts, btsParcours);
+    this.setState({ dialogchangebts: false });
+  };
+  handleCloseDialogChangeClasse = () => {
+    this.setState({ dialogchangebts: false });
+  };
+
+
   handleDeleteMany = () => {
+    this.setState({ selectedUserLogin: '' });
+    this.setState({ openDeleteMessage: "Confirmer la suppression des utilisateurs sélectionnés ?" });
+    this.setState({ openDeleteManyDialog: true });
+  };
+  handleDeleteManyConfirm = () => {
     this.props.onDeleteMany(this.state.selected);
+    this.setState({ openDeleteManyDialog: false });
+  };
+  handleCloseDeleteManyDialog = () => {
+    this.setState({ openDeleteManyDialog: false });
   };
 
   handleActivateMany = () => {
@@ -211,7 +242,7 @@ class UtilisateursTable extends React.Component {
 
   render() {
     const { classes, users, nomUser, bts } = this.props;
-    const { order, orderBy, selected } = this.state;
+    const { order, orderBy, selected, classeSelected, dialogchangebts } = this.state;
     const rows = [];
 
     users.forEach( (user) => {
@@ -240,11 +271,13 @@ class UtilisateursTable extends React.Component {
       <Paper className={classes.root}>
         <UtilisateursTableToolbar
           className={classes.root}
+          classeSelected={this.props.classeSelected}
           numTotal={rows.length}
           numSelected={selected.length}
-          onDeleteMany={this.handleDeleteMany}
+          onChangeBTSMany={this.handleChangeBTSMany}
           onActivateMany={this.handleActivateMany}
           onDeactivateMany={this.handleDeactivateMany}
+          onDeleteMany={this.handleDeleteMany}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -263,10 +296,18 @@ class UtilisateursTable extends React.Component {
           </Table>
 
           <DialogResetPassword
-            isDialogPasswordOpened={this.state.openDialogPwd}
+            open={this.state.openDialogPwd}
             userLogin={this.state.selectedUserLogin}
             onChangePassword={this.props.onChangePassword}
             onClose={this.handleCloseDialogPwd}
+          />
+
+          <DialogChangeBTS
+            classes={classes}
+            classeSelected={classeSelected}
+            open={dialogchangebts}
+            onClose={this.handleCloseDialogChangeClasse}
+            onActionValidate={this.handleChangeBTSManyConfirm}
           />
 
           <AlertDialog
@@ -278,6 +319,17 @@ class UtilisateursTable extends React.Component {
 
             onClose={this.handleCloseDeleteDialog}
             onActionValidate={this.handleDeleteConfirm}
+          />
+
+          <AlertDialog
+            isDialogOpened={this.state.openDeleteManyDialog}
+            variant="error"
+            titleText="Suppression des utilisateurs"
+            contentText={this.state.openDeleteMessage}
+            actionButtonLabel="Supprimer"
+
+            onClose={this.handleCloseDeleteManyDialog}
+            onActionValidate={this.handleDeleteManyConfirm}
           />
         </div>
       </Paper>

@@ -1,6 +1,7 @@
 import React,  { Component } from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
 import { Link, withRouter } from 'react-router-dom';
+
+import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,8 +14,14 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Menu from './Menu';
+import Tooltip from "@material-ui/core/Tooltip";
 
+// Material icons
+import {
+  Input as InputIcon
+} from '@material-ui/icons';
+
+import Menu from './Menu';
 const logo = require('../images/logo_epsi-wis.png');
 
 const styles = theme => ({
@@ -73,8 +80,11 @@ const styles = theme => ({
     paddingTop: 20,
     paddingBottom: 20,
     minWidth: 'auto'
-  }
-})
+  },
+  signOutButton: {
+    marginLeft: 'auto'
+  },
+});
 
 class Topbar extends Component {
 
@@ -82,6 +92,12 @@ class Topbar extends Component {
     value: 0,
     menuDrawer: false
   };
+
+  handleSignOut = () => {
+    const { history } = this.props;
+    history.push('/logout');
+  };
+
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -93,9 +109,9 @@ class Topbar extends Component {
 
   mobileMenuClose = (event) => {
     this.setState({ menuDrawer: false });
-  }
+  };
   mobileSwipeMenuOpen = (event) => {
-  }
+  };
 
   componentDidMount() {
     window.scrollTo(0, 0);
@@ -113,7 +129,7 @@ class Topbar extends Component {
               <MenuIcon />
             </IconButton>
           </div>
-          <Grid container spacing={24} alignItems='baseline'>
+          <Grid container alignItems='baseline'>
             <Grid item xs={12} className={classes.flex}>
               <div className={classes.inline}>
                 <Typography variant="h6" color="inherit" noWrap>
@@ -152,6 +168,16 @@ class Topbar extends Component {
                       ))}
                     </Tabs>
                   </div>
+
+
+                  <Tooltip key={"signOuticon"} title={"Déconnexion"}>
+                    <IconButton
+                      className={classes.signOutButton}
+                      onClick={this.handleSignOut}
+                    >
+                      <InputIcon />
+                    </IconButton>
+                  </Tooltip>
                 </React.Fragment>
               )}
             </Grid>

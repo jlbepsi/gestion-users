@@ -8,6 +8,8 @@ import Menu from "./Menu";
 class Dashboard extends Component {
 
   render() {
+    console.log(this.props.location.pathname)
+
     const menu = Menu.find(m => m.pathname === this.props.location.pathname);
 
     return (

@@ -1,5 +1,4 @@
-/** TODO : importer la classe AuthService */
-// import AuthService from "../Security/AuthService";
+import AuthService from "./Security/AuthService";
 
 export default class BaseAPI {
 
@@ -73,8 +72,7 @@ export default class BaseAPI {
       method: method,
       headers: {
         'Content-Type': 'application/json',
-        /** TODO : ajouter le token à l'appel API */
-        //'Authorization': 'Bearer ' + AuthService.getToken()
+        'Authorization': 'Bearer ' + AuthService.getToken()
       },
       body: (data == null ? '' : JSON.stringify(data))
     };

@@ -5,26 +5,23 @@ import TableRow from "@material-ui/core/TableRow/index";
 import TableCell from "@material-ui/core/TableCell/index";
 import Checkbox from "@material-ui/core/Checkbox/index";
 import IconButton from "@material-ui/core/IconButton/index";
-import ActivateIcon from '@material-ui/icons/LinkOutlined';
-import DeactivateIcon from '@material-ui/icons/LinkOffOutlined';
+import ActivateIcon from '@material-ui/icons/LockOpenOutlined';
+import DeactivateIcon from '@material-ui/icons/LockOutlined';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AccountIcon from '@material-ui/icons/AccountCircleOutlined';
 import Tooltip from "@material-ui/core/Tooltip/index";
-
-import DoneButton from "@material-ui/icons/CheckCircle"
-import CancelButton from "@material-ui/icons/CancelRounded"
 
 class UtilisateurRow extends Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      mouseInRow: false
-    };
+    /*this.state = {
+      mouseInRow: true
+    };*/
 
     this.modifyUser = this.modifyUser.bind(this);
-    this.mouseStatus = this.mouseStatus.bind(this);
+    //this.mouseStatus = this.mouseStatus.bind(this);
     this.handleDeactivate = this.handleDeactivate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
@@ -63,17 +60,17 @@ class UtilisateurRow extends Component {
 
 
 
-  mouseStatus(event, enter) {
+  /*mouseStatus(event, enter) {
     event.preventDefault();
 
     this.setState ( { mouseInRow:  enter});
-  }
+  }*/
 
   render() {
     const {user, isSelected} = this.props;
 
     const actions = [];
-    if (this.state.mouseInRow) {
+    //if (this.state.mouseInRow) {
 
       actions.push(
         <Tooltip key={"pwd" + user.login} title={"Modifier le mot de passe"}>
@@ -110,23 +107,29 @@ class UtilisateurRow extends Component {
         );
       } else {
       }
-    } else {
+    /*} else {
       actions.push(<div key={"none" + user.login} >&nbsp;</div>);
-    }
+    }*/
 
-    let btsParcours = "";
+    let btsInfos = "";
     if (user.bts) {
       if (user.btsParcours === "IND") {
-        btsParcours = "Indifférencié";
+        btsInfos = <div>
+          <Checkbox checked disabled={true} color="default" />
+          Indifférencié
+        </div>
       } else {
-        btsParcours = user.btsParcours;
+        btsInfos = <div>
+          <Checkbox checked disabled={true} color="default" />
+          {user.btsParcours}
+        </div>
       }
     }
 
     const activeUser = (user.active ?
-        <DoneButton color={"primary"} />
+        <ActivateIcon color={"primary"} />
       :
-        <CancelButton color={"error"}/>
+        <DeactivateIcon color={"error"}/>
     );
 
     return (
@@ -139,8 +142,8 @@ class UtilisateurRow extends Component {
         key={user.login}
         selected={isSelected}
         onClick={event => this.modifyUser(event, user.login)}
-        onMouseOver={event => this.mouseStatus(event, true)}
-        onMouseLeave={event => this.mouseStatus(event, false)}
+        /*onMouseOver={event => this.mouseStatus(event, true)}
+        onMouseLeave={event => this.mouseStatus(event, false)}*/
       >
         <TableCell padding="checkbox">
           <Checkbox
@@ -151,20 +154,11 @@ class UtilisateurRow extends Component {
         <TableCell>
           {activeUser}
         </TableCell>
-        <TableCell>
-          {user.login}
-        </TableCell>
-        <TableCell>{user.nomComplet}</TableCell>
         <TableCell>{user.nom}</TableCell>
         <TableCell>{user.prenom}</TableCell>
         <TableCell>{user.mail}</TableCell>
-        <TableCell>
-          {user.bts &&
-          <Checkbox checked disabled={true} color="default" />
-          }
+        <TableCell>{btsInfos}
         </TableCell>
-        <TableCell>{btsParcours}</TableCell>
-        <TableCell>{user.btsNumero}</TableCell>
         <TableCell>{actions}</TableCell>
       </TableRow>
     );

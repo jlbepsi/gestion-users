@@ -11,10 +11,10 @@ import InputLabel from "@material-ui/core/InputLabel";
 
 
 
-class ClasseSelect extends Component {
+function ClasseSelect(props) {
 
 
-  static optionClassesEPSI = [
+  const optionClassesEPSI = [
     { value: 'B1', label: 'B1' },
     { value: 'B2', label: 'B2' },
     { value: 'B3', label: 'B3' },
@@ -30,52 +30,55 @@ class ClasseSelect extends Component {
     { value: 'POS', label: 'POE' },
     { value: '-', label: 'D3' },
     { value: 'NA', label: 'NA' },
+    { value: '-', label: 'D4' },
+    { value: 'INT_PROF', label: 'Professeur' },
+    { value: 'INT_ADMIN', label: 'Administratif' },
   ];
 
-  handleChange = name => event => {
-    this.props.onChange(name, event.target.value)
-  };
+  function handleChange(event) {
+    props.onChange(event.target.value)
+  }
 
 
-  render() {
-    const { classeSelected, classes, disabled } = this.props;
-    const rows = [];
+  const { classeSelected, classes, disabled } = props;
+  const rows = [];
 
-    ClasseSelect.optionClassesEPSI.forEach( (option) => {
-      if (option.value === '-') {
-        rows.push(
-          <Divider key={option.label} />
-        );
-      } else {
-        rows.push(
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        );
-      }
-    });
+  optionClassesEPSI.forEach( (option) => {
+    if (option.value === '-') {
+      rows.push(
+        <Divider key={option.label} />
+      );
+    } else {
+      rows.push(
+        <MenuItem key={option.value} value={option.value}>
+          {option.label}
+        </MenuItem>
+      );
+    }
+  });
 
-    return (
-      <FormControl className={classes.container}>
-        <InputLabel shrink htmlFor="classeEPSI">
-          Classe
-        </InputLabel>
-        <Select
-          id="classeEPSI"
-          disabled={disabled}
-          className={classes.container}
-          value={classeSelected}
-          onChange={this.props.onChange('classe')}
-        >
-          {rows}
-        </Select>
-      </FormControl>
-    )}
+  return (
+    <FormControl className={classes.container}>
+      <InputLabel shrink htmlFor="classeEPSI">
+        Classe
+      </InputLabel>
+      <Select
+        id="classeEPSI"
+        disabled={disabled}
+        className={classes.container}
+        value={classeSelected}
+        onChange={handleChange}
+      >
+        {rows}
+      </Select>
+    </FormControl>
+   )
 }
 
 ClasseSelect.propTypes = {
-  /*classes: PropTypes.object.isRequired,*/
+  classes: PropTypes.object.isRequired,
   classeSelected: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default ClasseSelect;

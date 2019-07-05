@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import TextField from "@material-ui/core/TextField/index";
-import MenuItem from "@material-ui/core/MenuItem/index";
 import Switch from "@material-ui/core/Switch/index";
 import FormControlLabel from "@material-ui/core/FormControlLabel/index";
 
 import ClasseSelect from "../share/ClasseSelect"
 import Grid from "@material-ui/core/Grid/index";
 import Typography from "@material-ui/core/Typography/index";
+import BtsRules from "../share/BtsRules";
 
 const styles = theme => ({
   container: {
@@ -21,6 +21,10 @@ const styles = theme => ({
 
 class UtilisateursFilterBar extends Component {
 
+  handleChangeClasse = value => {
+    this.props.onChange('classe', value)
+  };
+
     handleChange = name => event => {
         this.props.onChange(name, event.target.value)
     };
@@ -29,12 +33,13 @@ class UtilisateursFilterBar extends Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, classeSelected } = this.props;
+        const btsOptionDisabled =  ! BtsRules.isBtsClasse (classeSelected);
 
         return (
 
 
-            <Grid container alignItems={"center"} spacing={16}>
+            <Grid container alignItems={"center"} spacing={2}>
 
 
               <Grid item xs={12} sm={12} md={6}>
@@ -46,9 +51,9 @@ class UtilisateursFilterBar extends Component {
               <Grid item xs={12} sm={12} md={2}>
 
                 <ClasseSelect
-                  classeSelected = {this.props.classe}
+                  classeSelected = {classeSelected}
                   classes = {classes}
-                  onChange={this.handleChange}
+                  onChange={this.handleChangeClasse}
                 />
               </Grid>
 
@@ -69,6 +74,7 @@ class UtilisateursFilterBar extends Component {
                     <Switch
                       color="default"
                       checked={this.props.bts}
+                      disabled={btsOptionDisabled}
                       onChange={this.handleChangeChecked('bts')}
                       value="bts"
                     />
@@ -83,7 +89,9 @@ class UtilisateursFilterBar extends Component {
 }
 
 UtilisateursFilterBar.propTypes = {
-    classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
+  classeSelected: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(UtilisateursFilterBar);

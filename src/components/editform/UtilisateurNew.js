@@ -1,7 +1,7 @@
 import UtilisateurModify from './UtilisateurModify'
 
 import withStyles from "@material-ui/core/styles/withStyles";
-import UtilisateursAPI from "../../api/UtilisateursAPI";
+import UtilisateursAPI from "../../services/UtilisateursAPI";
 import {withRouter} from "react-router-dom";
 
 // https://scotch.io/courses/using-react-router-4/route-params

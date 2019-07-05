@@ -2,7 +2,6 @@ import BaseAPI from "./BaseAPI";
 
 export default class UtilisateursAPI extends BaseAPI {
 
-  // Initializing important variables
   constructor() {
     //super('http://users.webservices.montpellier.epsi.fr/api/users');
     super('http://localhost:8081/api/users');
@@ -25,6 +24,15 @@ export default class UtilisateursAPI extends BaseAPI {
 
   importUsers(list) {
     return super.apiPostWithURL("imports/", list);
+  }
+
+  changeUsersBts(list, bts, btsParcours) {
+    return super.apiPut('changebts',
+      {
+        'logins': list,
+        'bts': bts,
+        'btsparcours': btsParcours
+      });
   }
 
   addUser(user) {
