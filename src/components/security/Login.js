@@ -59,6 +59,12 @@ export default function SignIn(props) {
   };
 
 
+  function handleKeyPress(event) {
+    if (event.key === 'Enter' && form.login.length > 0 && form.password.length > 0) {
+      handleSubmit();
+    }
+  }
+
   function handleCloseSnackBar (event, reason) {
     if (reason === 'clickaway') {
       return;
@@ -119,6 +125,7 @@ export default function SignIn(props) {
 
             value={form.password}
             onChange={updateField}
+            onKeyPress={handleKeyPress}
           />
           <Button
             type="submit"

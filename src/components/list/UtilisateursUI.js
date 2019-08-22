@@ -12,8 +12,6 @@ import SnackbarContentWrapper from "../share/SnackbarContentWrapper";
 
 
 
-
-
 class UtilisateursUI extends Component {
 
   constructor(props) {
