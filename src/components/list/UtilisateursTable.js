@@ -280,7 +280,7 @@ class UtilisateursTable extends React.Component {
           onDeleteMany={this.handleDeleteMany}
         />
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
+          <Table className={classes.table} aria-labelledby="tableTitle" size={"small"}>
 
             <UtilisateursTableHead
               numSelected={selected.length}

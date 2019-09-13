@@ -132,9 +132,9 @@ class UtilisateurRow extends Component {
         <DeactivateIcon color={"error"}/>
     );
 
+    // style={{height: 57}}
     return (
       <TableRow
-        style={{height: 57}}
         hover
         role="checkbox"
         aria-checked={isSelected}

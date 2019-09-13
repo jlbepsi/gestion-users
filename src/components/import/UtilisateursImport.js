@@ -70,6 +70,8 @@ class UtilisateursImport extends Component {
             classeImport : '',
             // Nom du fichier
             csvFileName : '',
+            // l'import est en cours
+            importRunning: false,
             // snackbar
             openSnackBar: false,
             snackbarIcon: "success",
@@ -130,10 +132,13 @@ class UtilisateursImport extends Component {
             classeImport: value
           }
         )
-    }
+    };
 
     doImport() {
         const classe = this.state.classeImport;
+
+        // L'import est démarré
+        this.setState( { importRunning: true});
 
         let users = this.state.users;
 
@@ -159,12 +164,16 @@ class UtilisateursImport extends Component {
                   }
               });
               this.setState( { users : usersList});
+              // L'import est fini
+              this.setState( { importRunning: false});
           })
           .catch(err => {
               console.log("Error import");
               this.setState({ snackbarIcon: "error" });
               this.setState({ snackbarMessage: "Erreur : " + err.message });
               this.setState({ openSnackBar: true });
+              // L'import est fini
+              this.setState( { importRunning: false});
           });
     }
 
@@ -194,10 +203,10 @@ class UtilisateursImport extends Component {
 
     render() {
         const menu = Menu.find(m => m.pathname === this.props.location.pathname);
-        const { csvFileName, users, classeImport} = this.state;
+        const { csvFileName, users, classeImport, importRunning} = this.state;
         const { classes } = this.props;
         const classeDisable = csvFileName === '';
-        const disableImportButton = classeDisable || classeImport === '';
+        const disableImportButton = importRunning || classeDisable || classeImport === '';
 
         const rows = [];
         let divStatus = <TableCell>&nbsp;</TableCell>;

@@ -3,8 +3,7 @@ import BaseAPI from "./BaseAPI";
 export default class UtilisateursAPI extends BaseAPI {
 
   constructor() {
-    //super('http://users.webservices.montpellier.epsi.fr/api/users');
-    super('http://localhost:8081/api/users');
+    super('https://192.168.100.7:8081/api/users');
   }
 
   /*
